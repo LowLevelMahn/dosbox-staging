@@ -865,6 +865,24 @@
     <ClCompile Include="..\src\libs\zmbv\zmbv_vfw.cpp">
       <Filter>src\libs\zmbv</Filter>
     </ClCompile>
+    <ClCompile Include="..\regames\emu.cpp">
+      <Filter>regames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regames\helper.cpp">
+      <Filter>regames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regames\alpha_waves\alpha_waves.cpp">
+      <Filter>regames\alpha_waves</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regames\history_line\historyline.cpp">
+      <Filter>regames\history_line</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regames\stunts\stunts.cpp">
+      <Filter>regames\stunts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\regames\swotl\swotl.cpp">
+      <Filter>regames\swotl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\audio_frame.h">
@@ -1423,6 +1441,15 @@
     <ClInclude Include="..\src\libs\zmbv\zmbv.h">
       <Filter>src\libs\zmbv</Filter>
     </ClInclude>
+    <ClInclude Include="..\regames\emu.hpp">
+      <Filter>regames</Filter>
+    </ClInclude>
+    <ClInclude Include="..\regames\helper.hpp">
+      <Filter>regames</Filter>
+    </ClInclude>
+    <ClInclude Include="..\regames\regames.hpp">
+      <Filter>regames</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\autoexec.h" />
     <ClInclude Include="..\src\capture\image\image_saver.h" />
     <ClInclude Include="..\src\capture\image\image_scaler.h" />
@@ -1569,6 +1596,21 @@
     </Filter>
     <Filter Include="src\libs\zmbv">
       <UniqueIdentifier>{99b19861-c042-4e3e-bf24-ee8a418866f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="regames">
+      <UniqueIdentifier>{a8a66d15-fa41-459b-bb1a-d1201a8a8d5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="regames\stunts">
+      <UniqueIdentifier>{b10f80c2-72a0-4e05-a112-1427d4d2b826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="regames\alpha_waves">
+      <UniqueIdentifier>{92876953-2d1a-4a7b-b6c5-f15749e92a81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="regames\history_line">
+      <UniqueIdentifier>{7f100396-ecbd-46d9-b4ab-cd09d33a1d88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="regames\swotl">
+      <UniqueIdentifier>{8d7e2331-2e70-43ff-88c4-34b7b0c7062b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
