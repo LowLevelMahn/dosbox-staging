@@ -34,6 +34,7 @@
 
 #include "simde/x86/mmx.h"
 
+#include "../../regames/regames.hpp"
 #if C_DEBUG
 #include "debug.h"
 #endif
@@ -159,6 +160,10 @@ Bits CPU_Core_Normal_Run() noexcept
 		BaseDS=SegBase(ds);
 		BaseSS=SegBase(ss);
 		core.base_val_ds=ds;
+#if REGAMES_GAME() != REGAMES_INACTIVE
+		regames::detect_code_run(SegValue(cs), reg_ip);
+#endif
+
 #if C_DEBUG
 #if C_HEAVY_DEBUG
 		if (DEBUG_HeavyIsBreakpoint()) {

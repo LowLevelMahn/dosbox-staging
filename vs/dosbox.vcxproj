@@ -451,6 +451,12 @@ IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\regames\alpha_waves\alpha_waves.cpp" />
+    <ClCompile Include="..\regames\emu.cpp" />
+    <ClCompile Include="..\regames\helper.cpp" />
+    <ClCompile Include="..\regames\history_line\historyline.cpp" />
+    <ClCompile Include="..\regames\stunts\stunts.cpp" />
+    <ClCompile Include="..\regames\swotl\swotl.cpp" />
     <ClCompile Include="..\src\dosbox.cpp" />
     <ClCompile Include="..\src\libs\PDCurses\pdcurses\addch.c" />
     <ClCompile Include="..\src\libs\PDCurses\pdcurses\addchstr.c" />
@@ -799,6 +805,9 @@ IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0</Command>
     <ClInclude Include="..\include\timer.h" />
     <ClInclude Include="..\include\vga.h" />
     <ClInclude Include="..\include\video.h" />
+    <ClInclude Include="..\regames\emu.hpp" />
+    <ClInclude Include="..\regames\helper.hpp" />
+    <ClInclude Include="..\regames\regames.hpp" />
     <ClInclude Include="..\src\capture\capture.h" />
     <ClInclude Include="..\src\capture\capture_audio.h" />
     <ClInclude Include="..\src\capture\capture_midi.h" />

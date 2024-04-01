@@ -38,6 +38,7 @@
 #include "support.h"
 #include "video.h"
 
+#include "../regames/regames.hpp"
 #if 1
 #undef LOG
 #if defined (_MSC_VER)
@@ -570,6 +571,13 @@ void CPU_Exception(Bitu which,Bitu error ) {
 
 uint8_t lastint;
 void CPU_Interrupt(Bitu num,Bitu type,Bitu oldeip) {
+
+#if REGAMES_GAME() == REGAMES_ALPHA_WAVES
+	if (num == 0xF0) {
+		//printf("Alpha_waves: Sound-TSR Interrupt ah=0x%02X\n", reg_ah);
+	}
+#endif
+
 	if (num == EXCEPTION_DB && (type&CPU_INT_EXCEPTION) == 0) {
 		CPU_DebugException(0,oldeip); // DR6 bits need updating
 		return;
@@ -1108,7 +1116,22 @@ void CPU_CALL(bool use32,Bitu selector,Bitu offset,Bitu oldeip) {
 			reg_eip=offset;
 		}
 		cpu.code.big=false;
-		SegSet16(cs,selector);
+#if REGAMES_GAME() != REGAMES_INACTIVE
+		const auto old_cs  = SegValue(cs);
+		const auto old_eip = reg_eip;
+#endif
+
+		SegSet16(cs, selector);
+
+#if REGAMES_GAME() != REGAMES_INACTIVE
+
+#if 0
+		printf("CPU_CALL old_cs=0x%04X, old.ip=0x%04X, new_cs: 0x%04X,
+		new.ip=0x%04X\n",old_cs, old_eip, SegValue(cs), reg_eip);
+#endif
+
+		bool replaced = regames::detect_call_begin(SegValue(cs), reg_eip);
+#endif
 		return;
 	} else {
 		CPU_CHECK_COND((selector & 0xfffc)==0,
@@ -2400,6 +2423,9 @@ public:
 		CPU_CycleDown=section->Get_int("cycledown");
 		std::string core(section->Get_string("core"));
 		cpudecoder=&CPU_Core_Normal_Run;
+#if REGAMES_GAME() != REGAMES_INACTIVE
+		core = "normal"; // force normal core
+#endif
 		if (core == "normal") {
 			cpudecoder=&CPU_Core_Normal_Run;
 		} else if (core =="simple") {

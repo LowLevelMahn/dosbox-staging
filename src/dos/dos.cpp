@@ -17,6 +17,9 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include "../regames/regames.hpp"
+#include "../regames/helper.hpp"
+
 #include "dos_inc.h"
 
 #include <cctype>
@@ -735,6 +738,9 @@ static Bitu DOS_21Handler(void) {
 	case 0x3d:		/* OPEN Open existing file */
 		MEM_StrCopy(SegPhys(ds)+reg_dx,name1,DOSNAMEBUF);
 		if (DOS_OpenFile(name1,reg_al,&reg_ax)) {
+#if REGAMES_LOG_DOS_FILE_STUFF()
+			printf("DOS_OpenFile: file: %s, handle: %i\n", name1, reg_ax);
+#endif
 			CALLBACK_SCF(false);
 		} else {
 			reg_ax=dos.errorcode;
@@ -742,6 +748,9 @@ static Bitu DOS_21Handler(void) {
 		}
 		break;
 	case 0x3e:		/* CLOSE Close file */
+#if REGAMES_LOG_DOS_FILE_STUFF()
+		printf("DOS_CloseFile: name: %s, handle: %i\n", Files[RealHandle(reg_bx)]->GetName(), reg_bx);
+#endif
 		if (DOS_CloseFile(reg_bx,false,&reg_al)) {
 			/* al destroyed with pre-close refcount from sft */
 			CALLBACK_SCF(false);
@@ -754,8 +763,31 @@ static Bitu DOS_21Handler(void) {
 		{ 
 			uint16_t toread=DOS_GetAmount();
 			dos.echo=true;
+#if REGAMES_LOG_DOS_FILE_STUFF()
+			{
+				auto file = Files[RealHandle(reg_bx)];
+				uint32_t pos = 0;
+				file->Seek(&pos, DOS_SEEK_CUR);
+			        printf("DOS_ReadFile: name: %s, handle: %i, toread: %u (0x%08X), at-pos: %u(0x%X) => ds:dx(0x%04X:0x%04X) => 0x%08X ",
+			               file->GetName(),
+			               reg_bx,
+			               toread,
+						   toread,
+			               pos,
+			               pos,
+			               SegValue(ds),
+			               reg_dx,
+			               SegValue(ds) * 16 + reg_dx);
+			}
+#endif
 			if (DOS_ReadFile(reg_bx,dos_copybuf,&toread)) {
 				MEM_BlockWrite(SegPhys(ds)+reg_dx,dos_copybuf,toread);
+#if REGAMES_LOG_DOS_FILE_STUFF()
+				printf("result: actually-read: %i (0x%08X)\n", toread, toread);
+#if 1
+				printf("%s\n", hexdump(dos_copybuf, toread, 16).c_str());
+#endif
+#endif
 				reg_ax=toread;
 				CALLBACK_SCF(false);
 			} else {
@@ -792,6 +824,9 @@ static Bitu DOS_21Handler(void) {
 	case 0x42:					/* LSEEK Set current file position */
 		{
 			uint32_t pos=(reg_cx<<16) + reg_dx;
+#if REGAMES_LOG_DOS_FILE_STUFF()
+			printf("DOS_SeekFile: name: %s, handle: %i, pos: %u(0x%x)\n", Files[RealHandle(reg_bx)]->GetName(), reg_bx, pos, pos);
+#endif
 			if (DOS_SeekFile(reg_bx,&pos,reg_al)) {
 				reg_dx=(uint16_t)(pos >> 16);
 				reg_ax=(uint16_t)(pos & 0xFFFF);

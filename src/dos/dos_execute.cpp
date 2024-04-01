@@ -34,6 +34,7 @@
 #include "string_utils.h"
 #include "video.h"
 
+#include "../regames/regames.hpp"
 #ifdef _MSC_VER
 #pragma pack(1)
 #endif
@@ -396,6 +397,17 @@ bool DOS_Execute(char * name,PhysPt block_pt,uint8_t flags) {
 	/* Load the executable */
 	loadaddress=PhysicalMake(loadseg,0);
 
+#if (REGAMES_GAME() != REGAMES_INACTIVE) || REGAMES_PRINT_EXE_LOAD_ADDRESS()
+	const PhysPt program_loadaddress = loadaddress;
+	const std::string program_name(name);
+
+#if REGAMES_PRINT_EXE_LOAD_ADDRESS()
+	printf("program: %s load-ofs32: 0x%08X\n",
+	          program_name.c_str(),
+	          program_loadaddress);
+#endif
+#endif
+
 	if (iscom) {	/* COM Load 64k - 256 bytes max */
 		pos=0;DOS_SeekFile(fhandle,&pos,DOS_SEEK_SET);	
 		readsize=0xffff-256;
@@ -553,6 +565,11 @@ bool DOS_Execute(char * name,PhysPt block_pt,uint8_t flags) {
 		reg_di=RealOffset(sssp);
 		reg_bp=0x91c;	/* DOS internal stack begin relict */
 		SegSet16(ds,pspseg);SegSet16(es,pspseg);
+
+#if REGAMES_GAME() != REGAMES_INACTIVE
+		regames::detect_exe(program_name, program_loadaddress);
+#endif
+
 #if C_DEBUG
 		/* Started from debug.com, then set breakpoint at start */
 		DEBUG_CheckExecuteBreakpoint(RealSegment(csip),RealOffset(csip));
